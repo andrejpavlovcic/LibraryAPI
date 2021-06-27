@@ -11,15 +11,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
-/* User Table */
-type User struct {
-	gorm.Model
-
-	Name         string
-	Surname      string
-	Reservations []Reservation
-}
-
 /* Book Table */
 type Book struct {
 	gorm.Model
@@ -47,7 +38,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/users", allUsers).Methods("GET")
 	myRouter.HandleFunc("/user/{Name}/{Surname}", newUser).Methods("POST")
 	myRouter.HandleFunc("/user/{Name}/{Surname}", deleteUser).Methods("DELETE")
-	myRouter.HandleFunc("/user/{Name}/{Surname}", deleteUser).Methods("PUT")
+	myRouter.HandleFunc("/user/{Name}/{Surname}", updateUser).Methods("PUT")
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), myRouter))
 }
 
