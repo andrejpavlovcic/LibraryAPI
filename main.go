@@ -73,9 +73,10 @@ func main() {
 	} else {
 		fmt.Println("Sucessfully Connected To Database!")
 	}
-	/* Close Connection To Database */
-	defer database.Close()
 
 	handleRequests()
+
+	/* Close Connection To Database */
+	defer database.Close()
 
 }
