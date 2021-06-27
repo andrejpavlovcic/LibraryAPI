@@ -46,7 +46,7 @@ var database *gorm.DB
 func getUsers(w http.ResponseWriter, r *http.Request) {
 
 	users := Users {
-		User{Name: "Andrej", Surname: "PAvlovčič"}
+		User{Name: "Andrej", Surname: "PAvlovčič"},
 	}
 
 	json.NewEncoder(w).Encode(users)
