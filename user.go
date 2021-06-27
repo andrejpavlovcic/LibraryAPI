@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -22,7 +23,7 @@ type User struct {
 }
 
 func allUsers(w http.ResponseWriter, r *http.Request) {
-	database, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+	database, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		fmt.Println(err.Error())
 		panic("Failed To Connect To Database!")
