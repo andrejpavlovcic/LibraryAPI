@@ -44,11 +44,13 @@ type Users []User
 var database *gorm.DB
  
 func getUsers(w http.ResponseWriter, r *http.Request) {
-
-	users := Users {
-		User{Name: "Andrej", Surname: "PAvlovčič"},
+	database, error := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+	if error != nil {
+		log.Fatal(error)
 	}
 
+	var users []User
+	database.Find(&users)
 	json.NewEncoder(w).Encode(users)
 }
 
@@ -61,7 +63,7 @@ func handleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.HandleFunc("/", homePage)
-	router.HandleFunc("/users", getUsers)
+	router.HandleFunc("/users", getUsers).Methods("GET")
 	http.ListenAndServe(":"+os.Getenv("PORT"), router)
 }
 
