@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -43,11 +44,9 @@ var database *gorm.DB
 func getUsers(w http.ResponseWriter, r *http.Request) {
 
 	var users []User
-	/*
 	database.Find(&users)
 
 	json.NewEncoder(w).Encode(&users)
-	*/
 }
 
 
