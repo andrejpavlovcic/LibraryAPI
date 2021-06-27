@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -53,9 +54,11 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleRequests() {
+	port, _ := os.LookupEnv("PORT")
+	pornt := fmt.Sprintf(":%s", port)
 	http.HandleFunc("/", homePage)
 	//http.HandleFunc("/users", getUsers)
-	log.Fatal(http.ListenAndServe(":5432", nil))
+	log.Fatal(http.ListenAndServe(pornt, nil))
 }
 
 func main() {
