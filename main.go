@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -37,7 +38,7 @@ type Reservation struct {
 }
 
 var database *gorm.DB
- /*
+ 
 func getUsers(w http.ResponseWriter, r *http.Request) {
 	var users []User
 
@@ -46,7 +47,7 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("All Users Endpoint")
 	json.NewEncoder(w).Encode(users)
 }
-*/
+
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Library API")
@@ -54,7 +55,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 
 func handleRequests() {
 	http.HandleFunc("/", homePage)
-	//http.HandleFunc("/users", getUsers)
+	http.HandleFunc("/users", getUsers)
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
 }
 
