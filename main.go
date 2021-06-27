@@ -2,12 +2,12 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -41,12 +41,13 @@ type Reservation struct {
 var database *gorm.DB
  
 func getUsers(w http.ResponseWriter, r *http.Request) {
-	var users []User
 
+	var users []User
+	/*
 	database.Find(&users)
 
-	fmt.Println("All Users Endpoint")
 	json.NewEncoder(w).Encode(&users)
+	*/
 }
 
 
@@ -55,9 +56,11 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleRequests() {
+	router := mux.NewRouter().StrictSlash(true)
+
 	http.HandleFunc("/", homePage)
 	http.HandleFunc("/users", getUsers)
-	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+	http.ListenAndServe(":"+os.Getenv("PORT"), router)
 }
 
 func main() {
@@ -71,10 +74,8 @@ func main() {
 	} else {
 		fmt.Println("Sucessfully Connected To Database!")
 	}
+	defer database.Close()
 
 	handleRequests()
-
-	/* Close Connection To Database */
-	defer database.Close()
 
 }
