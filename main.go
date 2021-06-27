@@ -43,9 +43,7 @@ var database *gorm.DB
 func getUsers(w http.ResponseWriter, r *http.Request) {
 	var users []User
 
-	database.Find(users)
-
-	fmt.Println(users)
+	database.Find(&users)
 
 	fmt.Println("All Users Endpoint")
 	json.NewEncoder(w).Encode(&users)
