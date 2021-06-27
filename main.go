@@ -36,8 +36,6 @@ type Reservation struct {
 	BookID int
 }
 
-var database *gorm.DB
-
 /*
 func getUsers(w http.ResponseWriter, r *http.Request) {
 	var users []User
@@ -72,7 +70,5 @@ func main() {
 	}
 	/* Close Connection To Database */
 	defer database.Close()
-
-	handleRequests()
 
 }
