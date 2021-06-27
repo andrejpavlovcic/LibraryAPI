@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
+	"os"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -45,7 +47,6 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 }
 */
 
-/*
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Library API")
 }
@@ -55,7 +56,6 @@ func handleRequests() {
 	//http.HandleFunc("/users", getUsers)
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
 }
-*/
 
 func main() {
 	/* Database URI */
@@ -70,5 +70,7 @@ func main() {
 	}
 	/* Close Connection To Database */
 	defer database.Close()
+
+	handleRequests()
 
 }
