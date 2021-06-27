@@ -44,6 +44,10 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/", homePage).Methods("GET")
+	myRouter.HandleFunc("/users", allUsers).Methods("GET")
+	myRouter.HandleFunc("/user/{Name}/{Surname}", newUser).Methods("POST")
+	myRouter.HandleFunc("/user/{Name}/{Surname}", deleteUser).Methods("DELETE")
+	myRouter.HandleFunc("/user/{Name}/{Surname}", deleteUser).Methods("PUT")
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), myRouter))
 }
 
