@@ -39,14 +39,17 @@ type Reservation struct {
 	BookID int
 }
 
+type Users []User
+
 var database *gorm.DB
  
 func getUsers(w http.ResponseWriter, r *http.Request) {
 
-	var users []User
-	database.Find(&users)
+	users := Users {
+		User{Name: "Andrej", Surname: "PAvlovčič"}
+	}
 
-	json.NewEncoder(w).Encode(&users)
+	json.NewEncoder(w).Encode(users)
 }
 
 
