@@ -57,7 +57,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 func handleRequests() {
 	http.HandleFunc("/", homePage)
 	http.HandleFunc("/users", getUsers)
-	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
+	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
 
 func main() {
