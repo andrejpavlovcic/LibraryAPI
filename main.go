@@ -54,16 +54,14 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleRequests() {
-	port, _ := os.LookupEnv("PORT")
-	pornt := fmt.Sprintf(":%s", port)
 	http.HandleFunc("/", homePage)
 	//http.HandleFunc("/users", getUsers)
-	log.Fatal(http.ListenAndServe(pornt, nil))
+	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
 }
 
 func main() {
 	/* Database URI */
-	databasebURI := "host=ec2-54-247-158-179.eu-west-1.compute.amazonaws.com user=nhncmcoribklwj dbname=d13gif6br221hd password=498ca2245aa1ef6280c2b5ee942e2cc974d333b435c3bd05629e94b0855ebb02 port=5432"
+	databasebURI := "host=ec2-54-247-158-179.eu-west-1.compute.amazonaws.com user=nhncmcoribklwj dbname=d13gif6br221hd password=498ca2245aa1ef6280c2b5ee942e2cc974d333b435c3bd05629e94b0855ebb02 port=" + os.Getenv("PORT")
 
 	/* Open Connection To Database */
 	database, error := gorm.Open("postgres", databasebURI)
