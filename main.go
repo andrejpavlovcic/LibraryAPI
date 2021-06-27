@@ -73,4 +73,6 @@ func main() {
 	/* Close Connection To Database */
 	defer database.Close()
 
+	handleRequests()
+
 }
