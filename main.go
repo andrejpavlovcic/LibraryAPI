@@ -57,8 +57,8 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 func handleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 
-	http.HandleFunc("/", homePage)
-	http.HandleFunc("/users", getUsers)
+	router.HandleFunc("/", homePage)
+	router.HandleFunc("/users", getUsers)
 	http.ListenAndServe(":"+os.Getenv("PORT"), router)
 }
 
