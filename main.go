@@ -45,7 +45,7 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 	database.Find(users)
 
 	fmt.Println("All Users Endpoint")
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(&users)
 }
 
 
