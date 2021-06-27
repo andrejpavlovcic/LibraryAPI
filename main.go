@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -52,9 +53,10 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleRequests() {
+	router := mux.newRouter()
 	http.HandleFunc("/", homePage)
 	//http.HandleFunc("/users", getUsers)
-	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
+	http.ListenAndServe(":"+os.Getenv("PORT"), router)
 }
 
 func main() {
