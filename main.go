@@ -64,6 +64,9 @@ func handleRequests() {
 	myRouter.HandleFunc("/book/{Title}/{Stock}", newBook).Methods("POST")
 	myRouter.HandleFunc("/book/{Id}", deleteBook).Methods("DELETE")
 	myRouter.HandleFunc("/book/{Id}/{Stock}", updateBookStock).Methods("PUT")
+
+	/* Reservations */
+	myRouter.HandleFunc("/reservations", allReservations).Methods("GET")
 	
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), myRouter))
 }
