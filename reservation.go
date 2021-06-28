@@ -54,3 +54,31 @@ func newReservation(w http.ResponseWriter, r *http.Request) {
 		database.Save(&book)
 	}
 }
+
+func deleteReservation(w http.ResponseWriter, r *http.Request) {
+	database, err := gorm.Open("postgres", databaseURI)
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("Failed To Connect To Database!")
+	}
+	defer database.Close()
+
+	/* Delete Reservation */
+	vars := mux.Vars(r)
+	userID := vars["UserID"]
+	bookID := vars["BookID"]
+	intUserID, _ := strconv.Atoi(userID)
+	intBookID, _ := strconv.Atoi(bookID)
+
+	var book Book
+	database.Where("ID = ?", intBookID).Find(&book)
+	
+	var reservation Reservation
+	database.Where("UserID = ? AND BookID", intUserID, intBookID).Find(&reservation)
+
+	database.Delete(&reservation)
+	book.Stock = (book.Stock + 1)
+	database.Save(&book)
+
+	fmt.Fprintf(w, "Reservation Succesfuly Deleted!")
+}
