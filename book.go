@@ -110,14 +110,14 @@ func deleteBook(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["Id"]
 
-	var user User
-	database.Where("ID = ?", id).Find(&user)
-	database.Delete(&user)
+	var book Book
+	database.Where("ID = ?", id).Find(&book)
+	database.Delete(&book)
 
-	fmt.Fprintf(w, "User Succesfuly Deleted!")
+	fmt.Fprintf(w, "Book Succesfuly Deleted!")
 }
 
-func updateBook(w http.ResponseWriter, r *http.Request) {
+func updateBookStock(w http.ResponseWriter, r *http.Request) {
 	database, err := gorm.Open("postgres", databaseURI)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -128,15 +128,14 @@ func updateBook(w http.ResponseWriter, r *http.Request) {
 	/* Update Book */
 	vars := mux.Vars(r)
 	id := vars["Id"]
-	newName := vars["NewName"]
-	newSurname := vars["NewSurname"]
+	updatedStock := vars["Stock"]
+	intUpdatedStock, _ := strconv.Atoi(updatedStock)
 
-	var user User
-	database.Where("ID = ?", id).Find(&user)
+	var book Book
+	database.Where("ID = ?", id).Find(&book)
 	
-	user.Name = newName
-	user.Surname = newSurname
+	book.Stock = intUpdatedStock
 
-	database.Save(&user)
-	fmt.Fprintf(w, "User Succesfuly Updated!")
+	database.Save(&book)
+	fmt.Fprintf(w, "Book Stock Succesfuly Updated!")
 }
