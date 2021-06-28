@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
@@ -88,12 +89,13 @@ func newBook(w http.ResponseWriter, r *http.Request) {
 
 	/* Create New Book */
 	vars := mux.Vars(r)
-	name := vars["Name"]
-	surname := vars["Surname"]
+	title := vars["Title"]
+	stock := vars["Stock"]
+	intStock, _ := strconv.Atoi(stock)
 
-	database.Create(&User{Name: name, Surname: surname})
+	database.Create(&Book{Title: title, Stock: intStock})
 
-	fmt.Fprintf(w, "New User Succesfuly Created!")
+	fmt.Fprintf(w, "New Book Succesfuly Created!")
 }
 
 func deleteBook(w http.ResponseWriter, r *http.Request) {

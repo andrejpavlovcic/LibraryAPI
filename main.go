@@ -61,7 +61,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/all_books", allBooks).Methods("GET")
 	myRouter.HandleFunc("/avaible_books", avaibleBooks).Methods("GET")
 	myRouter.HandleFunc("/book/{Id}", getBook).Methods("GET")
-	myRouter.HandleFunc("/book/{Title}", newBook).Methods("POST")
+	myRouter.HandleFunc("/book/{Title}/{Stock}", newBook).Methods("POST")
 	myRouter.HandleFunc("/book/{Id}", deleteBook).Methods("DELETE")
 	myRouter.HandleFunc("/book/{Id}/{NewTitle}", updateBook).Methods("PUT")
 	
