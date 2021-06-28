@@ -67,7 +67,7 @@ func handleRequests() {
 
 	/* Reservations */
 	myRouter.HandleFunc("/reservations", allReservations).Methods("GET")
-	myRouter.HandleFunc("/reservation/{UserID}/{BookID}", newReservation).Methods("POSt")
+	myRouter.HandleFunc("/reservation/{UserID}/{BookID}", newReservation).Methods("POST")
 	
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), myRouter))
 }
