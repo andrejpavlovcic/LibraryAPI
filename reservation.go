@@ -74,9 +74,9 @@ func deleteReservation(w http.ResponseWriter, r *http.Request) {
 	database.Where("ID = ?", intBookID).Find(&book)
 	
 	var reservation Reservation
-	database.Where("UserID = ? AND BookID", intUserID, intBookID).Find(&reservation)
-
-	database.Delete(&reservation)
+	database.Where("UserID = ? AND BookID = ?", intUserID, intBookID).Find(&reservation)
+    database.Delete(&reservation)
+	
 	book.Stock = (book.Stock + 1)
 	database.Save(&book)
 
