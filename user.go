@@ -23,6 +23,7 @@ func allUsers(w http.ResponseWriter, r *http.Request) {
 
 	if err := database.Find(&users).Error; err != nil {
 		fmt.Println(err.Error())
+		panic("User Find Error")
 	}
 	
 	for index := range users {
@@ -51,6 +52,7 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 
 	if err := database.First(&user, id).Error; err != nil {
 		fmt.Println(err.Error())
+		panic("User Find Error")
 	}
 	database.Model(&user).Related(&reservations)
 	
@@ -74,6 +76,7 @@ func newUser(w http.ResponseWriter, r *http.Request) {
 
 	if err := database.Create(&User{Name: name, Surname: surname}).Error; err != nil {
 		fmt.Println(err.Error())
+		panic("User Create Error")
 	}
 
 	fmt.Fprintf(w, "New User Succesfuly Created!")
@@ -94,10 +97,12 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 	var user User
 	if err := database.Where("ID = ?", id).Find(&user).Error; err != nil {
 		fmt.Println(err.Error())
+		panic("User Delete Error")
 	}
 
 	if err := database.Delete(&user).Error; err != nil {
 		fmt.Println(err.Error())
+		panic("User Delete Error")
 	}
 
 	fmt.Fprintf(w, "User Succesfuly Deleted!")
@@ -120,6 +125,7 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	var user User
 	if err := database.Where("ID = ?", id).Find(&user).Error; err != nil {
 		fmt.Println(err.Error())
+		panic("User Update Error - No User")
 	}
 	
 	user.Name = newName
@@ -127,6 +133,7 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 
 	if err := database.Save(&user).Error; err != nil {
 		fmt.Println(err.Error())
+		panic("User Update Error")
 	}
 	fmt.Fprintf(w, "User Succesfuly Updated!")
 }

@@ -22,6 +22,7 @@ func allReservations(w http.ResponseWriter, r *http.Request) {
 	var reservations []Reservation
 	if err := database.Find(&reservations).Error; err != nil {
 		fmt.Println(err.Error())
+		panic("Reservation Find Error")
 	}
 
 	json.NewEncoder(w).Encode(reservations)
@@ -43,17 +44,26 @@ func newReservation(w http.ResponseWriter, r *http.Request) {
 	intBookID, _ := strconv.Atoi(bookID)
 
 	var book Book
-	database.First(&book, bookID)
+	if err := database.First(&book, bookID).Error; err != nil {
+		fmt.Println(err.Error())
+		panic("Book Find Error")
+	}
 
 	if book.Stock <= 0 {
 		fmt.Fprintf(w, "This Book Is Out Of Stock!")
 	} else {
 		/* Create Reservation */
-		database.Create(&Reservation{UserID: intUserID, BookID: intBookID})
+		if err := database.Create(&Reservation{UserID: intUserID, BookID: intBookID}).Error; err != nil {
+			fmt.Println(err.Error())
+			panic("Reservation Create Error")
+		}
 
 		/* Update Book Stock */
 		book.Stock = (book.Stock - 1)
-		database.Save(&book)
+		if err := database.Save(&book).Error; err != nil {
+			fmt.Println(err.Error())
+			panic("Book Update Error")
+		}
 		fmt.Fprintf(w, "Reservation Succesfuly Created!")
 	}
 }
@@ -72,9 +82,15 @@ func deleteReservation(w http.ResponseWriter, r *http.Request) {
 	bookID := vars["BookID"]
 
 	var reservation Reservation
-	database.Where("User_ID = ? AND Book_ID = ?", userID, bookID).Find(&reservation)
+	if err := database.Where("User_ID = ? AND Book_ID = ?", userID, bookID).Find(&reservation).Error; err != nil {
+		fmt.Println(err.Error())
+		panic("Reservation Find Error")
+	}
 	fmt.Printf("%+v\n", reservation)
-	database.Delete(&reservation)
+	if err := database.Delete(&reservation).Error; err != nil {
+		fmt.Println(err.Error())
+		panic("Reservation Delete Error")
+	}
 
 	fmt.Fprintf(w, "Reservation Succesfuly Deleted!")
 }

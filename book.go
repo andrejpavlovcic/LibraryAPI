@@ -22,7 +22,10 @@ func allBooks(w http.ResponseWriter, r *http.Request) {
 	var books []Book
 	var reservations []Reservation
 
-	database.Find(&books)
+	if err := database.Find(&books).Error; err != nil {
+		fmt.Println(err.Error())
+		panic("Book Find Error")
+	}
 	
 	for index := range books {
 		database.Model(&books[index]).Related(&reservations)
@@ -45,7 +48,10 @@ func avaibleBooks(w http.ResponseWriter, r *http.Request) {
 	var books []Book
 	var reservations []Reservation
 
-	database.Where("Stock > 0").Find(&books)
+	if err := database.Where("Stock > 0").Find(&books).Error; err != nil {
+		fmt.Println(err.Error())
+		panic("Book Find Error")
+	}
 	
 	for index := range books {
 		database.Model(&books[index]).Related(&reservations)
@@ -71,7 +77,10 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 	var book Book
 	var reservations []Reservation
 
-	database.First(&book, id)
+	if err := database.First(&book, id).Error; err != nil {
+		fmt.Println(err.Error())
+		panic("Book Find Error")
+	}
 	database.Model(&book).Related(&reservations)
 	
 	book.Reservations = reservations
@@ -93,7 +102,10 @@ func newBook(w http.ResponseWriter, r *http.Request) {
 	stock := vars["Stock"]
 	intStock, _ := strconv.Atoi(stock)
 
-	database.Create(&Book{Title: title, Stock: intStock})
+	if err := database.Create(&Book{Title: title, Stock: intStock}).Error; err != nil {
+		fmt.Println(err.Error())
+		panic("Book Create Error")
+	}
 
 	fmt.Fprintf(w, "New Book Succesfuly Created!")
 }
@@ -111,8 +123,15 @@ func deleteBook(w http.ResponseWriter, r *http.Request) {
 	id := vars["Id"]
 
 	var book Book
-	database.Where("ID = ?", id).Find(&book)
-	database.Delete(&book)
+	if err := database.Where("ID = ?", id).Find(&book).Error; err != nil {
+		fmt.Println(err.Error())
+		panic("Book Find Error")
+	}
+	
+	if err := database.Delete(&book).Error; err != nil {
+		fmt.Println(err.Error())
+		panic("Book Delete Error")
+	}
 
 	fmt.Fprintf(w, "Book Succesfuly Deleted!")
 }
@@ -132,10 +151,16 @@ func updateBookStock(w http.ResponseWriter, r *http.Request) {
 	intUpdatedStock, _ := strconv.Atoi(updatedStock)
 
 	var book Book
-	database.Where("ID = ?", id).Find(&book)
+	if err := database.Where("ID = ?", id).Find(&book).Error; err != nil {
+		fmt.Println(err.Error())
+		panic("Book Find Error")
+	}
 	
 	book.Stock = intUpdatedStock
 
-	database.Save(&book)
+	if err := database.Save(&book).Error; err != nil {
+		fmt.Println(err.Error())
+		panic("Book Update Error")
+	}
 	fmt.Fprintf(w, "Book Stock Succesfuly Updated!")
 }
