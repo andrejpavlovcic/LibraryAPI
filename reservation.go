@@ -77,7 +77,7 @@ func deleteReservation(w http.ResponseWriter, r *http.Request) {
 
 	var reservation Reservation
 	database.Where("UserID = ? AND BookID = ?", userID, bookID).First(&reservation)
-	fmt.Fprintf(w, &reservation)
+
     database.Delete(&reservation)
 
 	var book Book
