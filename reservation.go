@@ -51,5 +51,6 @@ func newReservation(w http.ResponseWriter, r *http.Request) {
 
 		/* Update Book Stock */
 		book.Stock = (book.Stock - 1)
+		database.Save(&book)
 	}
 }
