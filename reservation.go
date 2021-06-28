@@ -24,6 +24,7 @@ func allReservations(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(reservations)
 
+	fmt.Fprintf(w, "Reservation Succesfuly Created!")
 }
 
 func newReservation(w http.ResponseWriter, r *http.Request) {
@@ -71,7 +72,7 @@ func deleteReservation(w http.ResponseWriter, r *http.Request) {
 	intBookID, _ := strconv.Atoi(bookID)
 	
 	var reservation Reservation
-	database.Where("UserID = ? AND BookID = ?", intUserID, intBookID).Find(&reservation)
+	database.Where("UserID = ? AND BookID = ?", intUserID, intBookID).First(&reservation)
     database.Delete(&reservation)
 
 	var book Book
