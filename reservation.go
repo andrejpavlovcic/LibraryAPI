@@ -68,22 +68,10 @@ func deleteReservation(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	userID := vars["UserID"]
 	bookID := vars["BookID"]
-	//intUserID, _ := strconv.Atoi(userID)
-	//intBookID, _ := strconv.Atoi(bookID)
-
-	fmt.Fprintf(w, userID)
-	fmt.Fprintf(w, bookID)
-	
 
 	var reservation Reservation
-	database.Where("UserID = ? AND BookID = ?", userID, bookID).First(&reservation)
-
-    database.Delete(&reservation)
-
-	var book Book
-	database.First(&book, bookID)
-	book.Stock = (book.Stock + 1)
-	database.Save(&book)
+	database.Where("UserID = ? AND BookID = ?", userID, bookID).Find(&reservation)
+	database.Delete(&reservation)
 
 	fmt.Fprintf(w, "Reservation Succesfuly Deleted!")
 }
