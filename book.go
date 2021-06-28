@@ -32,6 +32,29 @@ func allBooks(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func avaibleBooks(w http.ResponseWriter, r *http.Request) {
+	database, err := gorm.Open("postgres", databaseURI)
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("Failed To Connect To Database!")
+	}
+	defer database.Close()
+
+	/* Find Books */
+	var books []Book
+	var reservations []Reservation
+
+	database.Where("Stock > 0").Find(&books)
+	
+	for index := range books {
+		database.Model(&books[index]).Related(&reservations)
+		books[index].Reservations = reservations
+	}
+
+	json.NewEncoder(w).Encode(books)
+
+}
+
 func getBook(w http.ResponseWriter, r *http.Request) {
 	database, err := gorm.Open("postgres", databaseURI)
 	if err != nil {
@@ -44,15 +67,15 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["Id"]
 
-	var user User
+	var book Book
 	var reservations []Reservation
 
-	database.First(&user, id)
-	database.Model(&user).Related(&reservations)
+	database.First(&book, id)
+	database.Model(&book).Related(&reservations)
 	
-	user.Reservations = reservations
+	book.Reservations = reservations
 
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(book)
 }
 
 func newBook(w http.ResponseWriter, r *http.Request) {
