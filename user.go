@@ -65,14 +65,35 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	name := vars["Name"]
+	surname := vars["Surname"]
 
 	var user User
-	database.Where("Name = ?", name).Find(&user)
+	database.Where("Name = ? AND Surname = ?", name, surname).Find(&user)
 	database.Delete(&user)
 
 	fmt.Fprintf(w, "User Succesfuly Deleted!")
 }
 
 func updateUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Update User")
+	database, err := gorm.Open("postgres", databaseURI)
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("Failed To Connect To Database!")
+	}
+	defer database.Close()
+
+	vars := mux.Vars(r)
+	name := vars["Name"]
+	surname := vars["Surname"]
+	newName := vars["NewName"]
+	newSurname := vars["NewSurname"]
+
+	var user User
+	database.Where("Name = ? AND surname = ?", name, surname).Find(&user)
+	
+	user.Name = newName
+	user.Surname = newSurname
+
+	database.Save(&user)
+	fmt.Fprintf(w, "User Succesfuly Updated!")
 }
