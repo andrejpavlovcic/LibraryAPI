@@ -11,6 +11,15 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
+/* User Table */
+type User struct {
+	gorm.Model
+
+	Name         string
+	Surname      string
+	Reservations []Reservation
+}
+
 /* Book Table */
 type Book struct {
 	gorm.Model
@@ -35,10 +44,14 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/", homePage).Methods("GET")
+	
+	/* Users */
 	myRouter.HandleFunc("/users", allUsers).Methods("GET")
+	myRouter.HandleFunc("/user/{Id}", getUser).Methods("GET")
 	myRouter.HandleFunc("/user/{Name}/{Surname}", newUser).Methods("POST")
 	myRouter.HandleFunc("/user/{Name}/{Surname}", deleteUser).Methods("DELETE")
 	myRouter.HandleFunc("/user/{Name}/{Surname}/{NewName}/{NewSurname}", updateUser).Methods("PUT")
+	
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), myRouter))
 }
 

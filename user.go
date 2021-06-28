@@ -12,15 +12,6 @@ import (
 var database *gorm.DB
 var err error
 
-/* User Table */
-type User struct {
-	gorm.Model
-
-	Name         string
-	Surname      string
-	Reservations []Reservation
-}
-
 var databaseURI = "host=ec2-54-247-158-179.eu-west-1.compute.amazonaws.com user=nhncmcoribklwj dbname=d13gif6br221hd password=498ca2245aa1ef6280c2b5ee942e2cc974d333b435c3bd05629e94b0855ebb02 port=5432"
 
 func allUsers(w http.ResponseWriter, r *http.Request) {
@@ -36,6 +27,25 @@ func allUsers(w http.ResponseWriter, r *http.Request) {
 	database.Find(&users)
 	json.NewEncoder(w).Encode(users)
 
+}
+
+func getUser(w http.ResponseWriter, r *http.Request) {
+	database, err := gorm.Open("postgres", databaseURI)
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("Failed To Connect To Database!")
+	}
+	defer database.Close()
+
+	/* Find User */
+	vars := mux.Vars(r)
+	id := vars["Id"]
+
+	var user User
+	var reservations []Reservation
+
+	database.First(&user, id)
+	database.Model(&user).Related(&reservations)
 }
 
 func newUser(w http.ResponseWriter, r *http.Request) {
