@@ -46,6 +46,10 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 
 	database.First(&user, id)
 	database.Model(&user).Related(&reservations)
+	
+	user.Reservations = reservations
+
+	json.NewEncoder(w).Encode(user)
 }
 
 func newUser(w http.ResponseWriter, r *http.Request) {
