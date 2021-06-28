@@ -70,9 +70,14 @@ func deleteReservation(w http.ResponseWriter, r *http.Request) {
 	bookID := vars["BookID"]
 	//intUserID, _ := strconv.Atoi(userID)
 	//intBookID, _ := strconv.Atoi(bookID)
+
+	fmt.Fprintf(w, userID)
+	fmt.Fprintf(w, bookID)
 	
+
 	var reservation Reservation
 	database.Where("UserID = ? AND BookID = ?", userID, bookID).First(&reservation)
+	fmt.Fprintf(w, &reservation)
     database.Delete(&reservation)
 
 	var book Book
