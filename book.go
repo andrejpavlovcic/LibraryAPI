@@ -9,7 +9,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func allUsers(w http.ResponseWriter, r *http.Request) {
+func allBooks(w http.ResponseWriter, r *http.Request) {
 	database, err := gorm.Open("postgres", databaseURI)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -17,22 +17,22 @@ func allUsers(w http.ResponseWriter, r *http.Request) {
 	}
 	defer database.Close()
 
-	/* Find Users */
-	var users []User
+	/* Find Books */
+	var books []Book
 	var reservations []Reservation
 
-	database.Find(&users)
+	database.Find(&books)
 	
-	for index := range users {
-		database.Model(&users[index]).Related(&reservations)
-		users[index].Reservations = reservations
+	for index := range books {
+		database.Model(&books[index]).Related(&reservations)
+		books[index].Reservations = reservations
 	}
 
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(books)
 
 }
 
-func getUser(w http.ResponseWriter, r *http.Request) {
+func getBook(w http.ResponseWriter, r *http.Request) {
 	database, err := gorm.Open("postgres", databaseURI)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -40,7 +40,7 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer database.Close()
 
-	/* Find User */
+	/* Find Book */
 	vars := mux.Vars(r)
 	id := vars["Id"]
 
@@ -55,7 +55,7 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
-func newUser(w http.ResponseWriter, r *http.Request) {
+func newBook(w http.ResponseWriter, r *http.Request) {
 	database, err := gorm.Open("postgres", databaseURI)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -63,7 +63,7 @@ func newUser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer database.Close()
 
-	/* Create New User */
+	/* Create New Book */
 	vars := mux.Vars(r)
 	name := vars["Name"]
 	surname := vars["Surname"]
@@ -73,7 +73,7 @@ func newUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "New User Succesfuly Created!")
 }
 
-func deleteUser(w http.ResponseWriter, r *http.Request) {
+func deleteBook(w http.ResponseWriter, r *http.Request) {
 	database, err := gorm.Open("postgres", databaseURI)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -81,7 +81,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer database.Close()
 
-	/* Delete User */
+	/* Delete Book */
 	vars := mux.Vars(r)
 	id := vars["Id"]
 
@@ -92,7 +92,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "User Succesfuly Deleted!")
 }
 
-func updateUser(w http.ResponseWriter, r *http.Request) {
+func updateBook(w http.ResponseWriter, r *http.Request) {
 	database, err := gorm.Open("postgres", databaseURI)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -100,7 +100,7 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer database.Close()
 
-	/* Update User */
+	/* Update Book */
 	vars := mux.Vars(r)
 	id := vars["Id"]
 	newName := vars["NewName"]
