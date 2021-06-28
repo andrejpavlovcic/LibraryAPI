@@ -24,7 +24,6 @@ func allReservations(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(reservations)
 
-	fmt.Fprintf(w, "Reservation Succesfuly Created!")
 }
 
 func newReservation(w http.ResponseWriter, r *http.Request) {
@@ -53,6 +52,7 @@ func newReservation(w http.ResponseWriter, r *http.Request) {
 		/* Update Book Stock */
 		book.Stock = (book.Stock - 1)
 		database.Save(&book)
+		fmt.Fprintf(w, "Reservation Succesfuly Created!")
 	}
 }
 
@@ -68,11 +68,11 @@ func deleteReservation(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	userID := vars["UserID"]
 	bookID := vars["BookID"]
-	intUserID, _ := strconv.Atoi(userID)
-	intBookID, _ := strconv.Atoi(bookID)
+	//intUserID, _ := strconv.Atoi(userID)
+	//intBookID, _ := strconv.Atoi(bookID)
 	
 	var reservation Reservation
-	database.Where("UserID = ? AND BookID = ?", intUserID, intBookID).First(&reservation)
+	database.Where("UserID = ? AND BookID = ?", userID, bookID).First(&reservation)
     database.Delete(&reservation)
 
 	var book Book
