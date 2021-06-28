@@ -24,7 +24,15 @@ func allUsers(w http.ResponseWriter, r *http.Request) {
 
 	/* Find Users */
 	var users []User
+	var reservations []Reservation
+
 	database.Find(&users)
+	
+	for index := range users {
+		database.Model(&users[index]).Related(&reservations)
+		users[index].Reservations = reservations
+	}
+
 	json.NewEncoder(w).Encode(users)
 
 }
