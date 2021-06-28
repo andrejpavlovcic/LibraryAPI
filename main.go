@@ -58,8 +58,8 @@ func handleRequests() {
 	myRouter.HandleFunc("/user/{Id}/{NewName}/{NewSurname}", updateUser).Methods("PUT")
 
 	/* Books */
-	myRouter.HandleFunc("/all_books", allBooks).Methods("GET")
-	myRouter.HandleFunc("/avaible_books", avaibleBooks).Methods("GET")
+	myRouter.HandleFunc("/books/all", allBooks).Methods("GET")
+	myRouter.HandleFunc("/books/avaible", avaibleBooks).Methods("GET")
 	myRouter.HandleFunc("/book/{Id}", getBook).Methods("GET")
 	myRouter.HandleFunc("/book/{Title}/{Stock}", newBook).Methods("POST")
 	myRouter.HandleFunc("/book/{Id}", deleteBook).Methods("DELETE")
@@ -67,6 +67,7 @@ func handleRequests() {
 
 	/* Reservations */
 	myRouter.HandleFunc("/reservations", allReservations).Methods("GET")
+	myRouter.HandleFunc("/reservation/{UserID}/{BookID}", newReservation).Methods("POSt")
 	
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), myRouter))
 }
