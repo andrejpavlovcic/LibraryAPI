@@ -100,7 +100,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 		panic("User Delete Error")
 	}
 
-	if err := database.Delete(&user).Error; err != nil {
+	if err := database.Unscoped().Delete(&user).Error; err != nil {
 		fmt.Println(err.Error())
 		panic("User Delete Error")
 	}

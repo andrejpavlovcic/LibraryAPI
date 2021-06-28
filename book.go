@@ -128,7 +128,7 @@ func deleteBook(w http.ResponseWriter, r *http.Request) {
 		panic("Book Find Error")
 	}
 	
-	if err := database.Delete(&book).Error; err != nil {
+	if err := database.Unscoped().Delete(&book).Error; err != nil {
 		fmt.Println(err.Error())
 		panic("Book Delete Error")
 	}

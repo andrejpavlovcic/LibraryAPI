@@ -87,7 +87,7 @@ func deleteReservation(w http.ResponseWriter, r *http.Request) {
 		panic("Reservation Find Error")
 	}
 	fmt.Printf("%+v\n", reservation)
-	if err := database.Delete(&reservation).Error; err != nil {
+	if err := database.Unscoped().Delete(&reservation).Error; err != nil {
 		fmt.Println(err.Error())
 		panic("Reservation Delete Error")
 	}
