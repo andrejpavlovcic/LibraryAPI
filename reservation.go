@@ -18,9 +18,11 @@ func allReservations(w http.ResponseWriter, r *http.Request) {
 	}
 	defer database.Close()
 
-	/* Find Books */
+	/* Find Reservations */
 	var reservations []Reservation
-	database.Find(&reservations)
+	if err := database.Find(&reservations).Error; err != nil {
+		fmt.Println(err.Error())
+	}
 
 	json.NewEncoder(w).Encode(reservations)
 
