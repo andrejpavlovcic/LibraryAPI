@@ -60,6 +60,7 @@ func newUser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer database.Close()
 
+	/* Create New User */
 	vars := mux.Vars(r)
 	name := vars["Name"]
 	surname := vars["Surname"]
@@ -77,12 +78,12 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer database.Close()
 
+	/* Delete User */
 	vars := mux.Vars(r)
-	name := vars["Name"]
-	surname := vars["Surname"]
+	id := vars["Id"]
 
 	var user User
-	database.Where("Name = ? AND Surname = ?", name, surname).Find(&user)
+	database.Where("ID = ?", id).Find(&user)
 	database.Delete(&user)
 
 	fmt.Fprintf(w, "User Succesfuly Deleted!")
@@ -96,14 +97,14 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer database.Close()
 
+	/* Update User */
 	vars := mux.Vars(r)
-	name := vars["Name"]
-	surname := vars["Surname"]
+	id := vars["Id"]
 	newName := vars["NewName"]
 	newSurname := vars["NewSurname"]
 
 	var user User
-	database.Where("Name = ? AND surname = ?", name, surname).Find(&user)
+	database.Where("ID = ?", id).Find(&user)
 	
 	user.Name = newName
 	user.Surname = newSurname
