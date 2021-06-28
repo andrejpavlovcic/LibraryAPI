@@ -43,6 +43,8 @@ func handleRequests() {
 }
 
 func main() {
+	host := "ec2-54-247-158-179.eu-west-1.compute.amazonaws.com"
+
 	fmt.Println("Library API")
 
 	handleRequests()
