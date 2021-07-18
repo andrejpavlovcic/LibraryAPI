@@ -79,7 +79,7 @@ func main() {
 		fmt.Println(err.Error())
 		panic("Failed To Connect To Database!")
 	}
-	defer database.Close()
-
 	handleRequests()
+
+	defer database.Close()
 }
