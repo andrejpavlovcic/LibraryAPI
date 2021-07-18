@@ -135,5 +135,6 @@ func updateBookStock(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 		panic("Book Update Error")
 	}
-	fmt.Fprintf(w, "Book Stock Succesfuly Updated!")
+
+	json.NewEncoder(w).Encode(book)
 }
