@@ -52,18 +52,18 @@ func handleRequests() {
 
 	/* Users */
 	myRouter.HandleFunc("/users", allUsers).Methods("GET")
-	myRouter.HandleFunc("/user/{Id}", getUser).Methods("GET")
+	myRouter.HandleFunc("/user/{ID}", getUser).Methods("GET")
 	myRouter.HandleFunc("/user/{Name}/{Surname}", newUser).Methods("POST")
-	myRouter.HandleFunc("/user/{Id}", deleteUser).Methods("DELETE")
-	myRouter.HandleFunc("/user/{Id}/{NewName}/{NewSurname}", updateUser).Methods("PUT")
+	myRouter.HandleFunc("/user/{ID}", deleteUser).Methods("DELETE")
+	myRouter.HandleFunc("/user/{ID}/{NewName}/{NewSurname}", updateUser).Methods("PUT")
 
 	/* Books */
 	myRouter.HandleFunc("/books/all", allBooks).Methods("GET")
 	myRouter.HandleFunc("/books/avaible", avaibleBooks).Methods("GET")
-	myRouter.HandleFunc("/book/{Id}", getBook).Methods("GET")
+	myRouter.HandleFunc("/book/{ID}", getBook).Methods("GET")
 	myRouter.HandleFunc("/book/{Title}/{Stock}", newBook).Methods("POST")
-	myRouter.HandleFunc("/book/{Id}", deleteBook).Methods("DELETE")
-	myRouter.HandleFunc("/book/{Id}/{Stock}", updateBookStock).Methods("PUT")
+	myRouter.HandleFunc("/book/{ID}", deleteBook).Methods("DELETE")
+	myRouter.HandleFunc("/book/{ID}/{Stock}", updateBookStock).Methods("PUT")
 
 	/* Reservations */
 	myRouter.HandleFunc("/reservations", allReservations).Methods("GET")

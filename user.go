@@ -6,10 +6,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 )
 
 func allUsers(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	var users []User
 	var reservations []Reservation
 
@@ -23,15 +23,14 @@ func allUsers(w http.ResponseWriter, r *http.Request) {
 		database.Model(&users[index]).Related(&reservations)
 		users[index].Reservations = reservations
 	}
-
-	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
 
 }
 
 func getUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(r)
-	id := vars["Id"]
+	id := vars["ID"]
 
 	var user User
 	var reservations []Reservation
@@ -49,12 +48,7 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func newUser(w http.ResponseWriter, r *http.Request) {
-	database, err := gorm.Open("postgres", databaseURI)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("Failed To Connect To Database!")
-	}
-	defer database.Close()
+	w.Header().Set("Content-Type", "application/json")
 
 	/* Create New User */
 	vars := mux.Vars(r)
@@ -70,8 +64,9 @@ func newUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(r)
-	id := vars["Id"]
+	id := vars["ID"]
 
 	var user User
 	if err := database.Where("ID = ?", id).Find(&user).Error; err != nil {
@@ -88,9 +83,10 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	/* Update User */
 	vars := mux.Vars(r)
-	id := vars["Id"]
+	id := vars["ID"]
 	newName := vars["NewName"]
 	newSurname := vars["NewSurname"]
 

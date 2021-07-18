@@ -10,6 +10,8 @@ import (
 )
 
 func allBooks(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	/* Find All Books */
 	var books []Book
 	var reservations []Reservation
@@ -29,6 +31,8 @@ func allBooks(w http.ResponseWriter, r *http.Request) {
 }
 
 func avaibleBooks(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	/* Find All AvaibleBooks */
 	var books []Book
 	var reservations []Reservation
@@ -44,13 +48,14 @@ func avaibleBooks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(books)
-
 }
 
 func getBook(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	/* Find Book */
 	vars := mux.Vars(r)
-	id := vars["Id"]
+	id := vars["ID"]
 
 	var book Book
 	var reservations []Reservation
@@ -67,24 +72,33 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func newBook(w http.ResponseWriter, r *http.Request) {
-	/* Create New Book */
+	w.Header().Set("Content-Type", "application/json")
+
+	var book Book
+	_ = json.NewDecoder(r.Body).Decode(&book)
+
 	vars := mux.Vars(r)
 	title := vars["Title"]
 	stock := vars["Stock"]
 	intStock, _ := strconv.Atoi(stock)
 
-	if err := database.Create(&Book{Title: title, Stock: intStock}).Error; err != nil {
+	book.Title = title
+	book.Stock = intStock
+
+	if err := database.Create(&book).Error; err != nil {
 		fmt.Println(err.Error())
 		panic("Book Create Error")
 	}
 
-	fmt.Fprintf(w, "New Book Succesfuly Created!")
+	json.NewEncoder(w).Encode(book)
 }
 
 func deleteBook(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	/* Delete Book */
 	vars := mux.Vars(r)
-	id := vars["Id"]
+	id := vars["ID"]
 
 	var book Book
 	if err := database.Where("ID = ?", id).Find(&book).Error; err != nil {
@@ -101,9 +115,11 @@ func deleteBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateBookStock(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	/* Update Book */
 	vars := mux.Vars(r)
-	id := vars["Id"]
+	id := vars["ID"]
 	updatedStock := vars["Stock"]
 	intUpdatedStock, _ := strconv.Atoi(updatedStock)
 

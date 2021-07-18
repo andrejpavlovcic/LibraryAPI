@@ -10,6 +10,7 @@ import (
 )
 
 func allReservations(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	/* Find Reservations */
 	var reservations []Reservation
 	if err := database.Find(&reservations).Error; err != nil {
@@ -18,7 +19,6 @@ func allReservations(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(reservations)
-
 }
 
 func newReservation(w http.ResponseWriter, r *http.Request) {
