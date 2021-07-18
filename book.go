@@ -26,7 +26,7 @@ func allBooks(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 		panic("Book Find Error")
 	}
-	
+
 	for index := range books {
 		database.Model(&books[index]).Related(&reservations)
 		books[index].Reservations = reservations
@@ -52,7 +52,7 @@ func avaibleBooks(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 		panic("Book Find Error")
 	}
-	
+
 	for index := range books {
 		database.Model(&books[index]).Related(&reservations)
 		books[index].Reservations = reservations
@@ -82,7 +82,7 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 		panic("Book Find Error")
 	}
 	database.Model(&book).Related(&reservations)
-	
+
 	book.Reservations = reservations
 
 	json.NewEncoder(w).Encode(book)
@@ -127,7 +127,7 @@ func deleteBook(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 		panic("Book Find Error")
 	}
-	
+
 	if err := database.Unscoped().Delete(&book).Error; err != nil {
 		fmt.Println(err.Error())
 		panic("Book Delete Error")
@@ -155,7 +155,7 @@ func updateBookStock(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 		panic("Book Find Error")
 	}
-	
+
 	book.Stock = intUpdatedStock
 
 	if err := database.Save(&book).Error; err != nil {

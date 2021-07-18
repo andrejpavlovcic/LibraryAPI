@@ -10,13 +10,6 @@ import (
 )
 
 func allUsers(w http.ResponseWriter, r *http.Request) {
-	database, err := gorm.Open("postgres", databaseURI)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("Failed To Connect To Database!")
-	}
-	defer database.Close()
-
 	/* Find Users */
 	var users []User
 	var reservations []Reservation
@@ -25,7 +18,7 @@ func allUsers(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 		panic("User Find Error")
 	}
-	
+
 	for index := range users {
 		database.Model(&users[index]).Related(&reservations)
 		users[index].Reservations = reservations
@@ -55,7 +48,7 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 		panic("User Find Error")
 	}
 	database.Model(&user).Related(&reservations)
-	
+
 	user.Reservations = reservations
 
 	json.NewEncoder(w).Encode(user)
@@ -127,7 +120,7 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 		panic("User Update Error - No User")
 	}
-	
+
 	user.Name = newName
 	user.Surname = newSurname
 
