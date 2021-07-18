@@ -111,7 +111,7 @@ func deleteBook(w http.ResponseWriter, r *http.Request) {
 		panic("Book Delete Error")
 	}
 
-	fmt.Fprintf(w, "Book Succesfuly Deleted!")
+	json.NewEncoder(w).Encode(book)
 }
 
 func updateBookStock(w http.ResponseWriter, r *http.Request) {
