@@ -7,17 +7,9 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 )
 
 func allReservations(w http.ResponseWriter, r *http.Request) {
-	database, err := gorm.Open("postgres", databaseURI)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("Failed To Connect To Database!")
-	}
-	defer database.Close()
-
 	/* Find Reservations */
 	var reservations []Reservation
 	if err := database.Find(&reservations).Error; err != nil {
@@ -30,13 +22,6 @@ func allReservations(w http.ResponseWriter, r *http.Request) {
 }
 
 func newReservation(w http.ResponseWriter, r *http.Request) {
-	database, err := gorm.Open("postgres", databaseURI)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("Failed To Connect To Database!")
-	}
-	defer database.Close()
-
 	vars := mux.Vars(r)
 	userID := vars["UserID"]
 	bookID := vars["BookID"]
@@ -69,13 +54,6 @@ func newReservation(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteReservation(w http.ResponseWriter, r *http.Request) {
-	database, err := gorm.Open("postgres", databaseURI)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("Failed To Connect To Database!")
-	}
-	defer database.Close()
-
 	/* Delete Reservation */
 	vars := mux.Vars(r)
 	userID := vars["UserID"]

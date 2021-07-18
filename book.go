@@ -7,18 +7,10 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 )
 
 func allBooks(w http.ResponseWriter, r *http.Request) {
-	database, err := gorm.Open("postgres", databaseURI)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("Failed To Connect To Database!")
-	}
-	defer database.Close()
-
-	/* Find Books */
+	/* Find All Books */
 	var books []Book
 	var reservations []Reservation
 
@@ -37,14 +29,7 @@ func allBooks(w http.ResponseWriter, r *http.Request) {
 }
 
 func avaibleBooks(w http.ResponseWriter, r *http.Request) {
-	database, err := gorm.Open("postgres", databaseURI)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("Failed To Connect To Database!")
-	}
-	defer database.Close()
-
-	/* Find Books */
+	/* Find All AvaibleBooks */
 	var books []Book
 	var reservations []Reservation
 
@@ -63,13 +48,6 @@ func avaibleBooks(w http.ResponseWriter, r *http.Request) {
 }
 
 func getBook(w http.ResponseWriter, r *http.Request) {
-	database, err := gorm.Open("postgres", databaseURI)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("Failed To Connect To Database!")
-	}
-	defer database.Close()
-
 	/* Find Book */
 	vars := mux.Vars(r)
 	id := vars["Id"]
@@ -89,13 +67,6 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func newBook(w http.ResponseWriter, r *http.Request) {
-	database, err := gorm.Open("postgres", databaseURI)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("Failed To Connect To Database!")
-	}
-	defer database.Close()
-
 	/* Create New Book */
 	vars := mux.Vars(r)
 	title := vars["Title"]
@@ -111,13 +82,6 @@ func newBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteBook(w http.ResponseWriter, r *http.Request) {
-	database, err := gorm.Open("postgres", databaseURI)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("Failed To Connect To Database!")
-	}
-	defer database.Close()
-
 	/* Delete Book */
 	vars := mux.Vars(r)
 	id := vars["Id"]
@@ -137,13 +101,6 @@ func deleteBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateBookStock(w http.ResponseWriter, r *http.Request) {
-	database, err := gorm.Open("postgres", databaseURI)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("Failed To Connect To Database!")
-	}
-	defer database.Close()
-
 	/* Update Book */
 	vars := mux.Vars(r)
 	id := vars["Id"]

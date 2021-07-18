@@ -10,10 +10,10 @@ import (
 )
 
 func allUsers(w http.ResponseWriter, r *http.Request) {
-	/* Find Users */
 	var users []User
 	var reservations []Reservation
 
+	/* Find All Users */
 	if err := database.Find(&users).Error; err != nil {
 		fmt.Println(err.Error())
 		panic("User Find Error")
@@ -24,25 +24,19 @@ func allUsers(w http.ResponseWriter, r *http.Request) {
 		users[index].Reservations = reservations
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
 
 }
 
 func getUser(w http.ResponseWriter, r *http.Request) {
-	database, err := gorm.Open("postgres", databaseURI)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("Failed To Connect To Database!")
-	}
-	defer database.Close()
-
-	/* Find User */
 	vars := mux.Vars(r)
 	id := vars["Id"]
 
 	var user User
 	var reservations []Reservation
 
+	/* Find User By ID */
 	if err := database.First(&user, id).Error; err != nil {
 		fmt.Println(err.Error())
 		panic("User Find Error")
@@ -76,14 +70,6 @@ func newUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteUser(w http.ResponseWriter, r *http.Request) {
-	database, err := gorm.Open("postgres", databaseURI)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("Failed To Connect To Database!")
-	}
-	defer database.Close()
-
-	/* Delete User */
 	vars := mux.Vars(r)
 	id := vars["Id"]
 
@@ -102,13 +88,6 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateUser(w http.ResponseWriter, r *http.Request) {
-	database, err := gorm.Open("postgres", databaseURI)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("Failed To Connect To Database!")
-	}
-	defer database.Close()
-
 	/* Update User */
 	vars := mux.Vars(r)
 	id := vars["Id"]
