@@ -49,7 +49,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/", homePage).Methods("GET")
-	
+
 	/* Users */
 	myRouter.HandleFunc("/users", allUsers).Methods("GET")
 	myRouter.HandleFunc("/user/{Id}", getUser).Methods("GET")
@@ -69,12 +69,17 @@ func handleRequests() {
 	myRouter.HandleFunc("/reservations", allReservations).Methods("GET")
 	myRouter.HandleFunc("/reservation/{UserID}/{BookID}", newReservation).Methods("POST")
 	myRouter.HandleFunc("/reservation/{UserID}/{BookID}", deleteReservation).Methods("DELETE")
-	
+
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), myRouter))
 }
 
 func main() {
-	fmt.Println("Library API")
+	database, err := gorm.Open("postgres", databaseURI)
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("Failed To Connect To Database!")
+	}
+	defer database.Close()
 
 	handleRequests()
 }
