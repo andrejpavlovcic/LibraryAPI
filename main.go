@@ -74,7 +74,7 @@ func handleRequests() {
 }
 
 func main() {
-	_, err := gorm.Open("postgres", databaseURI)
+	database, err = gorm.Open("postgres", databaseURI)
 	if err != nil {
 		fmt.Println(err.Error())
 		panic("Failed To Connect To Database!")
