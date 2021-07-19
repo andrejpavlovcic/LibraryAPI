@@ -123,7 +123,7 @@ func updateBookStock(w http.ResponseWriter, r *http.Request) {
 
 	var book Book
 	if err := database.Where("ID = ?", id).Find(&book).Error; err != nil {
-		returnError(w, err, 404)
+		returnError(w, 404)
 		return
 	} else {
 		book.Stock = intUpdatedStock
