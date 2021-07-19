@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/jinzhu/gorm"
@@ -23,6 +24,8 @@ func SetupDB() *gorm.DB {
 	if dbError != nil {
 		panic("Failed to connect to database")
 	}
+
+	fmt.Println("Connection To DB Succesful!")
 
 	//fix for connection timeout
 	//see: https://github.com/go-sql-driver/mysql/issues/257
