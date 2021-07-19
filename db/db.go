@@ -11,6 +11,8 @@ import (
 //database global
 var DB *gorm.DB
 
+var databaseURI = "host=ec2-54-247-158-179.eu-west-1.compute.amazonaws.com user=nhncmcoribklwj dbname=d13gif6br221hd password=498ca2245aa1ef6280c2b5ee942e2cc974d333b435c3bd05629e94b0855ebb02 port=5432"
+
 func SetupDB() *gorm.DB {
 
 	//db config vars
@@ -18,6 +20,11 @@ func SetupDB() *gorm.DB {
 	var dbName string = os.Getenv("DB_NAME")
 	var dbUser string = os.Getenv("DB_USERNAME")
 	var dbPassword string = os.Getenv("DB_PASSWORD")
+
+	fmt.Println(dbHost)
+	fmt.Println(dbName)
+	fmt.Println(dbUser)
+	fmt.Println(dbPassword)
 
 	//connect to db
 	db, dbError := gorm.Open("postgres", dbUser+":"+dbPassword+"@tcp("+dbHost+":5432)/"+dbName+"?charset=utf8&parseTime=True&loc=Local")
