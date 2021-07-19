@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -17,6 +16,7 @@ func allBooks(w http.ResponseWriter, r *http.Request) {
 
 	if err := database.Find(&books).Error; err != nil {
 		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(err)
 		return
 	}
 
@@ -25,19 +25,20 @@ func allBooks(w http.ResponseWriter, r *http.Request) {
 		books[index].Reservations = reservations
 	}
 
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(books)
 }
 
 func avaibleBooks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	/* Find All AvaibleBooks */
 	var books []Book
 	var reservations []Reservation
 
 	if err := database.Where("Stock > 0").Find(&books).Error; err != nil {
-		fmt.Println(err.Error())
-		panic("Book Find Error")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(err)
+		return
 	}
 
 	for index := range books {
@@ -45,13 +46,13 @@ func avaibleBooks(w http.ResponseWriter, r *http.Request) {
 		books[index].Reservations = reservations
 	}
 
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(books)
 }
 
 func getBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	/* Find Book */
 	vars := mux.Vars(r)
 	id := vars["ID"]
 
@@ -59,13 +60,15 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 	var reservations []Reservation
 
 	if err := database.First(&book, id).Error; err != nil {
-		fmt.Println(err.Error())
-		panic("Book Find Error")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(err)
+		return
 	}
-	database.Model(&book).Related(&reservations)
 
+	database.Model(&book).Related(&reservations)
 	book.Reservations = reservations
 
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(book)
 }
 
@@ -84,38 +87,41 @@ func newBook(w http.ResponseWriter, r *http.Request) {
 	book.Stock = intStock
 
 	if err := database.Create(&book).Error; err != nil {
-		fmt.Println(err.Error())
-		panic("Book Create Error")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(err)
+		return
 	}
 
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(book)
 }
 
 func deleteBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	/* Delete Book */
 	vars := mux.Vars(r)
 	id := vars["ID"]
 
 	var book Book
 	if err := database.Where("ID = ?", id).Find(&book).Error; err != nil {
-		fmt.Println(err.Error())
-		panic("Book Find Error")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(err)
+		return
 	}
 
 	if err := database.Unscoped().Delete(&book).Error; err != nil {
-		fmt.Println(err.Error())
-		panic("Book Delete Error")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(err)
+		return
 	}
 
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(book)
 }
 
 func updateBookStock(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	/* Update Book */
 	vars := mux.Vars(r)
 	id := vars["ID"]
 	updatedStock := vars["Stock"]
@@ -123,19 +129,20 @@ func updateBookStock(w http.ResponseWriter, r *http.Request) {
 
 	var book Book
 	if err := database.Where("ID = ?", id).Find(&book).Error; err != nil {
-		returnError(w, 404)
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(err)
 		return
-	} else {
-		book.Stock = intUpdatedStock
-		database.Save(&book)
 	}
 
 	book.Stock = intUpdatedStock
+	database.Save(&book)
 
 	if err := database.Save(&book).Error; err != nil {
-		fmt.Println(err.Error())
-		panic("Book Update Error")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(err)
+		return
 	}
 
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(book)
 }

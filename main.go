@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -38,10 +37,6 @@ type Reservation struct {
 	BookID int
 }
 
-type Error struct {
-	Message string `json:"Message"`
-}
-
 var database *gorm.DB
 var err error
 
@@ -49,18 +44,6 @@ var databaseURI = "host=ec2-54-247-158-179.eu-west-1.compute.amazonaws.com user=
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Library API")
-}
-
-func returnError(w http.ResponseWriter, code int) {
-	var errorData Error
-	output, err := json.Marshal(&errorData)
-	if err != nil {
-		w.Write([]byte("Cannot serialize error"))
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	w.Write(output)
 }
 
 func handleRequests() {
