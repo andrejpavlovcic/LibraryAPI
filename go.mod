@@ -1,4 +1,4 @@
-module library_api
+module github.com/Andre711/LibraryAPI
 
 go 1.16
 

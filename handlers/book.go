@@ -1,12 +1,24 @@
-package main
+package handlers
 
 import (
 	"encoding/json"
 	"net/http"
 	"strconv"
 
+	"github.com/Andre711/LibraryAPI/db"
+	customResponse "github.com/Andre711/LibraryAPI/response"
 	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
 )
+
+/* Book Table */
+type Book struct {
+	gorm.Model
+
+	Title        string
+	Stock        int
+	Reservations []Reservation
+}
 
 func allBooks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -14,14 +26,13 @@ func allBooks(w http.ResponseWriter, r *http.Request) {
 	var books []Book
 	var reservations []Reservation
 
-	if err := database.Find(&books).Error; err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(err)
+	if err := db.DB.Find(&books).Error; err != nil {
+		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
 	}
 
 	for index := range books {
-		database.Model(&books[index]).Related(&reservations)
+		db.DB.Model(&books[index]).Related(&reservations)
 		books[index].Reservations = reservations
 	}
 
@@ -35,14 +46,13 @@ func avaibleBooks(w http.ResponseWriter, r *http.Request) {
 	var books []Book
 	var reservations []Reservation
 
-	if err := database.Where("Stock > 0").Find(&books).Error; err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(err)
+	if err := db.DB.Where("Stock > 0").Find(&books).Error; err != nil {
+		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
 	}
 
 	for index := range books {
-		database.Model(&books[index]).Related(&reservations)
+		db.DB.Model(&books[index]).Related(&reservations)
 		books[index].Reservations = reservations
 	}
 
@@ -59,13 +69,12 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 	var book Book
 	var reservations []Reservation
 
-	if err := database.First(&book, id).Error; err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(err)
+	if err := db.DB.First(&book, id).Error; err != nil {
+		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
 	}
 
-	database.Model(&book).Related(&reservations)
+	db.DB.Model(&book).Related(&reservations)
 	book.Reservations = reservations
 
 	w.WriteHeader(http.StatusOK)
@@ -86,9 +95,8 @@ func newBook(w http.ResponseWriter, r *http.Request) {
 	book.Title = title
 	book.Stock = intStock
 
-	if err := database.Create(&book).Error; err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(err)
+	if err := db.DB.Create(&book).Error; err != nil {
+		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
 	}
 
@@ -103,15 +111,13 @@ func deleteBook(w http.ResponseWriter, r *http.Request) {
 	id := vars["ID"]
 
 	var book Book
-	if err := database.Where("ID = ?", id).Find(&book).Error; err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(err)
+	if err := db.DB.Where("ID = ?", id).Find(&book).Error; err != nil {
+		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
 	}
 
-	if err := database.Unscoped().Delete(&book).Error; err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(err)
+	if err := db.DB.Unscoped().Delete(&book).Error; err != nil {
+		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
 	}
 
@@ -128,18 +134,16 @@ func updateBookStock(w http.ResponseWriter, r *http.Request) {
 	intUpdatedStock, _ := strconv.Atoi(updatedStock)
 
 	var book Book
-	if err := database.Where("ID = ?", id).Find(&book).Error; err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(err)
+	if err := db.DB.Where("ID = ?", id).Find(&book).Error; err != nil {
+		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
 	}
 
 	book.Stock = intUpdatedStock
-	database.Save(&book)
+	db.DB.Save(&book)
 
-	if err := database.Save(&book).Error; err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(err)
+	if err := db.DB.Save(&book).Error; err != nil {
+		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
 	}
 
