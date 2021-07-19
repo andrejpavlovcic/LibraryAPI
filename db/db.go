@@ -20,11 +20,13 @@ func SetupDB() *gorm.DB {
 	var dbName string = os.Getenv("DB_NAME")
 	var dbUser string = os.Getenv("DB_USERNAME")
 	var dbPassword string = os.Getenv("DB_PASSWORD")
+	var dbl = os.Getenv("DATABASE_URL")
 
 	fmt.Println(dbHost)
 	fmt.Println(dbName)
 	fmt.Println(dbUser)
 	fmt.Println(dbPassword)
+	fmt.Println(dbl)
 
 	//connect to db
 	db, dbError := gorm.Open("postgres", dbUser+":"+dbPassword+"@tcp("+dbHost+":5432)/"+dbName+"?charset=utf8&parseTime=True&loc=Local")
