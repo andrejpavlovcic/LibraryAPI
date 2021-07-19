@@ -88,9 +88,11 @@ func newBook(w http.ResponseWriter, r *http.Request) {
 	if err := database.Create(&book).Error; err != nil {
 		fmt.Println(err.Error())
 		panic("Book Create Error")
+	} else {
+		w.WriteHeader(http.StatusOK)
 	}
 
-	json.NewEncoder(w).Encode(book)
+	//json.NewEncoder(w).Encode(book)
 }
 
 func deleteBook(w http.ResponseWriter, r *http.Request) {
@@ -126,6 +128,9 @@ func updateBookStock(w http.ResponseWriter, r *http.Request) {
 	var book Book
 	if err := database.Where("ID = ?", id).Find(&book).Error; err != nil {
 		json.NewEncoder(w).Encode("")
+	} else {
+		book.Stock = intUpdatedStock
+		database.Save(&book)
 	}
 
 	book.Stock = intUpdatedStock
