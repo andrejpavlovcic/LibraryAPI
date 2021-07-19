@@ -29,7 +29,7 @@ func SetupDB() *gorm.DB {
 	fmt.Println(dbl)
 
 	//connect to db
-	db, dbError := gorm.Open("postgres", dbUser+":"+dbPassword+"@tcp("+dbHost+":5432)/"+dbName+"?charset=utf8&parseTime=True&loc=Local")
+	db, dbError := gorm.Open(dbl)
 	if dbError != nil {
 		panic("Failed to connect to database")
 	}
