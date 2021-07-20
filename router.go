@@ -3,8 +3,10 @@ package main
 import (
 	"net/http"
 
-	"github.com/Andre711/LibraryAPI/handlers"
+	"github.com/Andre711/LibraryAPI/book"
+	"github.com/Andre711/LibraryAPI/reservation"
 	customRouter "github.com/Andre711/LibraryAPI/router"
+	"github.com/Andre711/LibraryAPI/user"
 	"github.com/gorilla/mux"
 )
 
@@ -14,7 +16,11 @@ func NewRouter() *mux.Router {
 	router := mux.NewRouter()
 
 	/* Append User Routes */
-	customRouter.AppRoutes = append(customRouter.AppRoutes, handlers.Routes)
+	customRouter.AppRoutes = append(customRouter.AppRoutes, user.Routes)
+	/* Append Book Routes */
+	customRouter.AppRoutes = append(customRouter.AppRoutes, book.Routes)
+	/* Append Reservation Routes */
+	customRouter.AppRoutes = append(customRouter.AppRoutes, reservation.Routes)
 
 	for _, route := range customRouter.AppRoutes {
 

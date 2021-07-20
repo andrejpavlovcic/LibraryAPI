@@ -1,4 +1,4 @@
-package handlers
+package user
 
 import (
 	"encoding/json"
@@ -7,22 +7,13 @@ import (
 	"github.com/Andre711/LibraryAPI/db"
 	customResponse "github.com/Andre711/LibraryAPI/response"
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 )
-
-/* User Table */
-type User struct {
-	gorm.Model
-
-	Name         string
-	Surname      string
-	Reservations []Reservation
-}
 
 func allUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	var users []User
-	var reservations []Reservation
+
+	var users []db.User
+	var reservations []db.Reservation
 
 	/* Find All Users */
 	if err := db.DB.Find(&users).Error; err != nil {
@@ -33,31 +24,37 @@ func allUsers(w http.ResponseWriter, r *http.Request) {
 		db.DB.Model(&users[index]).Related(&reservations)
 		users[index].Reservations = reservations
 	}
+
 	json.NewEncoder(w).Encode(users)
 
 }
 
 func getUser(w http.ResponseWriter, r *http.Request) {
+
 	w.Header().Set("Content-Type", "application/json")
+
 	vars := mux.Vars(r)
 	id := vars["ID"]
 
-	var user User
-	var reservations []Reservation
+	var user db.User
+	var reservations []db.Reservation
 
 	/* Find User By ID */
 	if err := db.DB.First(&user, id).Error; err != nil {
 		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
 	}
+
 	db.DB.Model(&user).Related(&reservations)
 
 	user.Reservations = reservations
 
 	json.NewEncoder(w).Encode(user)
+
 }
 
 func newUser(w http.ResponseWriter, r *http.Request) {
+
 	w.Header().Set("Content-Type", "application/json")
 
 	/* Create New User */
@@ -65,7 +62,7 @@ func newUser(w http.ResponseWriter, r *http.Request) {
 	name := vars["Name"]
 	surname := vars["Surname"]
 
-	var user User
+	var user db.User
 
 	user.Name = name
 	user.Surname = surname
@@ -79,11 +76,12 @@ func newUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteUser(w http.ResponseWriter, r *http.Request) {
+
 	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(r)
 	id := vars["ID"]
 
-	var user User
+	var user db.User
 	if err := db.DB.Where("ID = ?", id).Find(&user).Error; err != nil {
 		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
@@ -98,6 +96,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateUser(w http.ResponseWriter, r *http.Request) {
+
 	w.Header().Set("Content-Type", "application/json")
 	/* Update User */
 	vars := mux.Vars(r)
@@ -105,7 +104,7 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	newName := vars["NewName"]
 	newSurname := vars["NewSurname"]
 
-	var user User
+	var user db.User
 	if err := db.DB.Where("ID = ?", id).Find(&user).Error; err != nil {
 		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
@@ -120,4 +119,5 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(user)
+
 }

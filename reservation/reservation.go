@@ -1,4 +1,4 @@
-package handlers
+package reservation
 
 import (
 	"encoding/json"
@@ -8,21 +8,12 @@ import (
 	"github.com/Andre711/LibraryAPI/db"
 	customResponse "github.com/Andre711/LibraryAPI/response"
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 )
-
-/* Reservation Table */
-type Reservation struct {
-	gorm.Model
-
-	UserID int
-	BookID int
-}
 
 func allReservations(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	/* Find Reservations */
-	var reservations []Reservation
+	var reservations []db.Reservation
 
 	if err := db.DB.Find(&reservations).Error; err != nil {
 		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
@@ -39,8 +30,8 @@ func newReservation(w http.ResponseWriter, r *http.Request) {
 	intUserID, _ := strconv.Atoi(userID)
 	intBookID, _ := strconv.Atoi(bookID)
 
-	var book Book
-	var reservation Reservation
+	var book db.Book
+	var reservation db.Reservation
 
 	if err := db.DB.First(&book, bookID).Error; err != nil {
 		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
@@ -78,7 +69,7 @@ func deleteReservation(w http.ResponseWriter, r *http.Request) {
 	userID := vars["UserID"]
 	bookID := vars["BookID"]
 
-	var reservation Reservation
+	var reservation db.Reservation
 
 	if err := db.DB.Where("User_ID = ? AND Book_ID = ?", userID, bookID).Find(&reservation).Error; err != nil {
 		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())

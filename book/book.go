@@ -1,4 +1,4 @@
-package handlers
+package book
 
 import (
 	"encoding/json"
@@ -8,23 +8,13 @@ import (
 	"github.com/Andre711/LibraryAPI/db"
 	customResponse "github.com/Andre711/LibraryAPI/response"
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 )
-
-/* Book Table */
-type Book struct {
-	gorm.Model
-
-	Title        string
-	Stock        int
-	Reservations []Reservation
-}
 
 func allBooks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	var books []Book
-	var reservations []Reservation
+	var books []db.Book
+	var reservations []db.Reservation
 
 	if err := db.DB.Find(&books).Error; err != nil {
 		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
@@ -43,8 +33,8 @@ func allBooks(w http.ResponseWriter, r *http.Request) {
 func avaibleBooks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	var books []Book
-	var reservations []Reservation
+	var books []db.Book
+	var reservations []db.Reservation
 
 	if err := db.DB.Where("Stock > 0").Find(&books).Error; err != nil {
 		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
@@ -66,8 +56,8 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["ID"]
 
-	var book Book
-	var reservations []Reservation
+	var book db.Book
+	var reservations []db.Reservation
 
 	if err := db.DB.First(&book, id).Error; err != nil {
 		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
@@ -84,7 +74,7 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 func newBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	var book Book
+	var book db.Book
 	_ = json.NewDecoder(r.Body).Decode(&book)
 
 	vars := mux.Vars(r)
@@ -110,7 +100,7 @@ func deleteBook(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["ID"]
 
-	var book Book
+	var book db.Book
 	if err := db.DB.Where("ID = ?", id).Find(&book).Error; err != nil {
 		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
@@ -133,7 +123,7 @@ func updateBookStock(w http.ResponseWriter, r *http.Request) {
 	updatedStock := vars["Stock"]
 	intUpdatedStock, _ := strconv.Atoi(updatedStock)
 
-	var book Book
+	var book db.Book
 	if err := db.DB.Where("ID = ?", id).Find(&book).Error; err != nil {
 		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
