@@ -12,7 +12,7 @@ import (
 
 func allReservations(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	/* Find Reservations */
+
 	var reservations []db.Reservation
 
 	if err := db.DB.Find(&reservations).Error; err != nil {
@@ -24,6 +24,8 @@ func allReservations(w http.ResponseWriter, r *http.Request) {
 }
 
 func newReservation(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	vars := mux.Vars(r)
 	userID := vars["UserID"]
 	bookID := vars["BookID"]
@@ -39,20 +41,18 @@ func newReservation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if book.Stock <= 0 {
-		customResponse.NewErrorResponse(w, http.StatusNotFound, "Out Of Stock")
+		customResponse.NewErrorResponse(w, http.StatusNotFound, "book out of stock")
 		return
 	}
 
 	reservation.UserID = intUserID
 	reservation.BookID = intBookID
 
-	/* Create Reservation */
 	if err := db.DB.Create(&reservation).Error; err != nil {
 		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
 	}
 
-	/* Update Book Stock */
 	book.Stock = (book.Stock - 1)
 
 	if err := db.DB.Save(&book).Error; err != nil {
@@ -64,12 +64,19 @@ func newReservation(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteReservation(w http.ResponseWriter, r *http.Request) {
-	/* Delete Reservation */
+	w.Header().Set("Content-Type", "application/json")
+
 	vars := mux.Vars(r)
 	userID := vars["UserID"]
 	bookID := vars["BookID"]
 
 	var reservation db.Reservation
+	var book db.Book
+
+	if err := db.DB.First(&book, bookID).Error; err != nil {
+		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
+		return
+	}
 
 	if err := db.DB.Where("User_ID = ? AND Book_ID = ?", userID, bookID).Find(&reservation).Error; err != nil {
 		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
@@ -77,6 +84,13 @@ func deleteReservation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := db.DB.Unscoped().Delete(&reservation).Error; err != nil {
+		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
+		return
+	}
+
+	book.Stock = (book.Stock + 1)
+
+	if err := db.DB.Save(&book).Error; err != nil {
 		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
 	}

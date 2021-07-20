@@ -15,9 +15,9 @@ func allUsers(w http.ResponseWriter, r *http.Request) {
 	var users []db.User
 	var reservations []db.Reservation
 
-	/* Find All Users */
 	if err := db.DB.Find(&users).Error; err != nil {
-		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
+		customResponse.NewErrorResponse(w, http.StatusNotFound, "no users found")
+		return
 	}
 
 	for index := range users {
@@ -30,7 +30,6 @@ func allUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func getUser(w http.ResponseWriter, r *http.Request) {
-
 	w.Header().Set("Content-Type", "application/json")
 
 	vars := mux.Vars(r)
@@ -39,7 +38,6 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 	var user db.User
 	var reservations []db.Reservation
 
-	/* Find User By ID */
 	if err := db.DB.First(&user, id).Error; err != nil {
 		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
 		return
@@ -50,14 +48,11 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 	user.Reservations = reservations
 
 	json.NewEncoder(w).Encode(user)
-
 }
 
 func newUser(w http.ResponseWriter, r *http.Request) {
-
 	w.Header().Set("Content-Type", "application/json")
 
-	/* Create New User */
 	vars := mux.Vars(r)
 	name := vars["Name"]
 	surname := vars["Surname"]
@@ -68,7 +63,7 @@ func newUser(w http.ResponseWriter, r *http.Request) {
 	user.Surname = surname
 
 	if err := db.DB.Create(&user).Error; err != nil {
-		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
+		customResponse.NewErrorResponse(w, http.StatusNotFound, "couldn't create user")
 		return
 	}
 
@@ -76,7 +71,6 @@ func newUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteUser(w http.ResponseWriter, r *http.Request) {
-
 	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(r)
 	id := vars["ID"]
@@ -88,7 +82,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := db.DB.Unscoped().Delete(&user).Error; err != nil {
-		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
+		customResponse.NewErrorResponse(w, http.StatusNotFound, "couldn't delete user")
 		return
 	}
 
@@ -96,9 +90,8 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateUser(w http.ResponseWriter, r *http.Request) {
-
 	w.Header().Set("Content-Type", "application/json")
-	/* Update User */
+
 	vars := mux.Vars(r)
 	id := vars["ID"]
 	newName := vars["NewName"]
@@ -114,10 +107,9 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	user.Surname = newSurname
 
 	if err := db.DB.Save(&user).Error; err != nil {
-		customResponse.NewErrorResponse(w, http.StatusNotFound, err.Error())
+		customResponse.NewErrorResponse(w, http.StatusNotFound, "couldn't update user")
 		return
 	}
 
 	json.NewEncoder(w).Encode(user)
-
 }

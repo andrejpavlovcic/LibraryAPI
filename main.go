@@ -11,15 +11,15 @@ import (
 
 func main() {
 
-	/* Init Router */
+	//Init Router
 	port := os.Getenv("PORT")
 	router := NewRouter()
 
-	/* Setup Database */
+	//Setup Database
 	db.DB = db.SetupDB()
 	defer db.DB.Close()
 
-	/* Create Http Server */
+	//Create Http Server
 	log.Fatal(http.ListenAndServe(":"+port, router))
 
 }

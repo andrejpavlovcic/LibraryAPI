@@ -12,27 +12,29 @@ import (
 
 func NewRouter() *mux.Router {
 
-	/* Init Router */
+	//Init Router
 	router := mux.NewRouter()
 
-	/* Append User Routes */
+	//Append User Routes
 	customRouter.AppRoutes = append(customRouter.AppRoutes, user.Routes)
-	/* Append Book Routes */
+
+	//Append Book Routes
 	customRouter.AppRoutes = append(customRouter.AppRoutes, book.Routes)
-	/* Append Reservation Routes */
+
+	//Append Reservation Routes
 	customRouter.AppRoutes = append(customRouter.AppRoutes, reservation.Routes)
 
 	for _, route := range customRouter.AppRoutes {
 
-		/* Create Subroute */
+		//Create Subroute
 		routePrefix := router.PathPrefix(route.Prefix).Subrouter()
 
-		/* Loop Through Each Sub Route */
+		//Loop Through Each Sub Route
 		for _, r := range route.SubRoutes {
 
 			var handler http.Handler = r.HandlerFunc
 
-			/* Attach Sub Route */
+			// Attach Sub Route
 			routePrefix.
 				Path(r.Pattern).
 				Handler(handler).

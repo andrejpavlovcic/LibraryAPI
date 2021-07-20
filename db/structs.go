@@ -2,7 +2,7 @@ package db
 
 import "github.com/jinzhu/gorm"
 
-/* Book Struct */
+//Book Table Struct
 type Book struct {
 	gorm.Model
 
@@ -11,7 +11,7 @@ type Book struct {
 	Reservations []Reservation
 }
 
-/* User Struct */
+//User Table Struct
 type User struct {
 	gorm.Model
 
@@ -20,7 +20,7 @@ type User struct {
 	Reservations []Reservation
 }
 
-/* Reservation Struct */
+//Reservation Table Struct
 type Reservation struct {
 	gorm.Model
 
